@@ -39,6 +39,7 @@ export class AuthService {
     console.log('access_token', access_token);
     return {
       user,
+      access_token,
       code: 3,
     }
   }
@@ -49,6 +50,7 @@ export class AuthService {
     if (hasUser) {
       throw new HttpException('用户已存在', 401);
     }
-    return await this.userRepository.save(data);
+    const user = await this.userRepository.save(data)
+    return user;
   }
 }

@@ -13,6 +13,7 @@ export class AuthController {
    * 登录
    * @param data
    */
+  @HttpCode(200)
   @Post('login')
   async login(@Body() data: UserCommonDto) {
     await this.authService.login(data)
@@ -22,15 +23,10 @@ export class AuthController {
    * 注册
    * @param data
    */
+  @HttpCode(200)
   @Post('register')
   async register(@Body() data: UserCommonDto) {
     await this.authService.register(data)
-  }
-
-  @UseGuards(AuthGuard)
-  @Get('profile')
-  getProfile(@Req() req) {
-    return req.user;
   }
 
 }

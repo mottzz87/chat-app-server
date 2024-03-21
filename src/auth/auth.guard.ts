@@ -7,21 +7,28 @@ import {
 import { JwtService } from '@nestjs/jwt';
 import { Request } from 'express';
 import { JWT_KEY } from 'src/const';
+import { VERSION } from 'src/const/server';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
-  constructor(private jwtService: JwtService) { }
+  constructor() { }
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
     const token = this.extractTokenFromHeader(request);
+    // 鉴权
+    if (this.whiteUrlList.includes(request.url.split('?')[0])) {
+      return true
+    }
     if (!token) {
       throw new UnauthorizedException();
     }
     try {
-      const payload = await this.jwtService.verifyAsync(
+      const payload = await new JwtService().verifyAsync(
         token,
-        JWT_KEY
+        {
+          secret: JWT_KEY.secret
+        }
       );
       // 💡 We're assigning the payload to the request object here
       // so that we can access it in our route handlers
@@ -29,8 +36,14 @@ export class AuthGuard implements CanActivate {
     } catch {
       throw new UnauthorizedException();
     }
-    return true;
+    return request;
   }
+
+  // 白名单权限
+  private whiteUrlList: string[] = [
+    `/api/${VERSION}/auth/login`,
+    `/api/${VERSION}/auth/register`
+  ]
 
   private extractTokenFromHeader(request: Request): string | undefined {
     const [type, token] = request.headers.authorization?.split(' ') ?? [];

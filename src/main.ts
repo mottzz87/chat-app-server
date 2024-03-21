@@ -4,10 +4,12 @@ import { TransformInterceptor } from './core/interceptor/transform/transform.int
 import { HttpExceptionFilter } from './core/filter/http-exception/http-exception.filter';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { ValidationPipe } from '@nestjs/common';
+import { AuthGuard } from './auth/auth.guard';
+import { VERSION } from './const/server';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
-  app.setGlobalPrefix('api')
+  app.setGlobalPrefix(`api/${VERSION}`)
   app.useGlobalPipes(new ValidationPipe({
     // whitelist: true,
     transform: true,
@@ -15,6 +17,7 @@ async function bootstrap() {
     //   enableImplicitConversion: true
     // }
   }));
+  app.useGlobalGuards(new AuthGuard());
   // 全局注册拦截器
   app.useGlobalInterceptors(new TransformInterceptor())
   // 注册全局错误的过滤器

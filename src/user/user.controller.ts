@@ -33,7 +33,6 @@ export class UserController {
   @UseGuards(AuthGuard)
   @Get('list')
   async findAll(@Query() query, @Req() req: Request | any): Promise<UserRo> {
-    console.log(333, req)
     return await this.userService.findAll(query)
   }
 
