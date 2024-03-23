@@ -45,8 +45,7 @@ export class TransformInterceptor implements NestInterceptor {
         return {
           code: statusCode,
           message: message,
-          data: instanceToPlain(originalData) || {},
-          timestamp: getCurrentTimestamp(),
+          data: instanceToPlain(originalData)
         };
       })
     );

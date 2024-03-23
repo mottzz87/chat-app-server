@@ -35,12 +35,10 @@ export class AuthService {
     if (user.password !== password) {
       throw new HttpException('用户名或密码错误', 201)
     }
-    const access_token = await this.certificate(user)
-    console.log('access_token', access_token);
+    const token = await this.certificate(user)
     return {
-      user,
-      access_token,
-      code: 3,
+      ...user,
+      token,
     }
   }
 
@@ -50,7 +48,6 @@ export class AuthService {
     if (hasUser) {
       throw new HttpException('用户已存在', 401);
     }
-    const user = await this.userRepository.save(data)
-    return user;
+    return await this.userRepository.save(data);
   }
 }

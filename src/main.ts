@@ -6,6 +6,7 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 import { ValidationPipe } from '@nestjs/common';
 import { AuthGuard } from './auth/auth.guard';
 import { VERSION } from './const/server';
+import { swaggerInit } from './utils/swagger';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
@@ -22,6 +23,8 @@ async function bootstrap() {
   app.useGlobalInterceptors(new TransformInterceptor())
   // 注册全局错误的过滤器
   app.useGlobalFilters(new HttpExceptionFilter())
+
+  await swaggerInit(app)
   await app.listen(process.env.NODE_PORT || 3000);
 }
 bootstrap();

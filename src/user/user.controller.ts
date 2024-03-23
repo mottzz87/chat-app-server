@@ -1,36 +1,17 @@
 import { Body, Controller, Post, Get, Query, Param, Put, Delete, UseGuards, Req } from '@nestjs/common';
 import { UserService, UserRo } from './user.service';
-import { UserCommonDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { AuthGuard } from 'src/auth/auth.guard';
+import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('用户类接口')
+@ApiBearerAuth()
 @Controller('user')
 export class UserController {
-
   constructor(private readonly userService: UserService) { }
-
-  /**
-   * 用户注册
-   * @param data
-   */
-  @Post('create')
-  async create(@Body() data: UserCommonDto) {
-    return await this.userService.register(data)
-  }
-
-  /**
-  * 注册
-  * @param data
-  */
-  @Post('register')
-  async register(@Body() data: UserCommonDto) {
-    await this.userService.register(data)
-  }
-
   /**
    * 获取用户列表
    */
-  @UseGuards(AuthGuard)
   @Get('list')
   async findAll(@Query() query, @Req() req: Request | any): Promise<UserRo> {
     return await this.userService.findAll(query)
@@ -63,6 +44,5 @@ export class UserController {
   async remove(@Param("id") id: number) {
     return await this.userService.remove(id)
   }
-
 
 }

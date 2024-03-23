@@ -54,7 +54,11 @@ export class UserService {
   }
   // 获取用户信息
   async findById(id): Promise<CreateUserDto> {
-    return await this.userRepository.findOne({ where: { id } });
+    const user = await this.userRepository.findOne({ where: { id } })
+    if (!user) {
+      throw new HttpException('该用户不存在', 201)
+    }
+    return user;
   }
 
   // 获取用户信息

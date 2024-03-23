@@ -1,8 +1,9 @@
 import { Body, Controller, Get, HttpCode, HttpStatus, Post, Req, UseGuards } from '@nestjs/common';
-import { AuthGuard } from 'src/auth/auth.guard';
 import { AuthService } from './auth.service';
 import { UserCommonDto } from 'src/user/dto/create-user.dto';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('注册登录')
 @Controller('auth')
 export class AuthController {
   constructor(
@@ -16,7 +17,7 @@ export class AuthController {
   @HttpCode(200)
   @Post('login')
   async login(@Body() data: UserCommonDto) {
-    await this.authService.login(data)
+    return await this.authService.login(data)
   }
 
   /**
@@ -26,7 +27,7 @@ export class AuthController {
   @HttpCode(200)
   @Post('register')
   async register(@Body() data: UserCommonDto) {
-    await this.authService.register(data)
+    return await this.authService.register(data)
   }
 
 }

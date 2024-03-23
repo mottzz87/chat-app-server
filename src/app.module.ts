@@ -11,7 +11,6 @@ import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([UserEntity]),
     ConfigModule.forRoot({
       isGlobal: true,  // 设置为全局
       envFilePath: [envConfig.path]

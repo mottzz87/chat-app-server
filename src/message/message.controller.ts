@@ -2,7 +2,10 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, Redirect } from '@ne
 import { MessageService } from './message.service';
 import { CreateMessageDto } from './dto/create-message.dto';
 import { UpdateMessageDto } from './dto/update-message.dto';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('消息类接口')
+@ApiBearerAuth()
 @Controller('message')
 export class MessageController {
   constructor(private readonly messageService: MessageService) { }

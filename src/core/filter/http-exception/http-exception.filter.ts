@@ -7,7 +7,6 @@ export class HttpExceptionFilter implements ExceptionFilter {
     const response = ctx.getResponse(); // 获取请求上下文中的 response对象
     const status = exception.getStatus(); // 获取异常状态码
 
-    console.log('11111', exception.message);
     const exceptionResponse: any = exception.getResponse();
     let validMessage = '';
 
