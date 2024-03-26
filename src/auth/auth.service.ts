@@ -3,9 +3,9 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { JwtService } from '@nestjs/jwt';
 import { UserEntity } from 'src/user/entities/user.entity';
 import { CreateUserDto, UserCommonDto } from 'src/user/dto/create-user.dto';
-import { UserService } from 'src/user/user.service';
 import { Repository } from 'typeorm';
-import { JWT_KEY } from 'src/const';
+import { JWT_CONFIG } from 'src/const';
+import { BcryptService } from '@/utils/bcrypt';
 
 @Injectable()
 export class AuthService {
@@ -20,34 +20,29 @@ export class AuthService {
       username: user.username,
     }
     const token = await this.jwtService.signAsync(payload, {
-      ...JWT_KEY
+      ...JWT_CONFIG
     })
     return token
   }
 
 
-  async login(data: Partial<UserCommonDto>): Promise<any> {
-    const { username, password } = data
-    const user = await this.userRepository.findOne({ where: { username } });
-    if (!user) {
-      throw new HttpException('用户名不存在', 201)
-    }
-    if (user.password !== password) {
-      throw new HttpException('用户名或密码错误', 201)
-    }
-    const token = await this.certificate(user)
+  async login(data: UserCommonDto): Promise<any> {
+    const token = await this.certificate(data)
     return {
-      ...user,
+      ...data,
       token,
     }
   }
 
   async register(data: Partial<UserCommonDto>): Promise<UserCommonDto> {
-    const { username } = data;
+    const { username, password } = data;
     const hasUser = await this.userRepository.findOne({ where: { username } });
     if (hasUser) {
       throw new HttpException('用户已存在', 401);
     }
-    return await this.userRepository.save(data);
+    return await this.userRepository.save({
+      ...data,
+      password: await BcryptService.hash(password)
+    });
   }
 }

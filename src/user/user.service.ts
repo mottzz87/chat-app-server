@@ -15,28 +15,6 @@ export class UserService {
     @InjectRepository(UserEntity)
     private readonly userRepository: Repository<UserEntity>,
   ) { }
-  // 用户注册
-  async register(data: Partial<CreateUserDto>): Promise<CreateUserDto> {
-    const { username } = data;
-    const hasUser = await this.userRepository.findOne({ where: { username } });
-    if (hasUser) {
-      throw new HttpException('用户已存在', 401);
-    }
-    return await this.userRepository.save(data);
-  }
-
-  async login(data: Partial<UserCommonDto>): Promise<UserCommonDto> {
-    const { username, password } = data
-    const user = await this.userRepository.findOne({ where: { username } });
-    if (!user) {
-      throw new HttpException('用户名不存在', 201)
-    }
-    if (user.password !== password) {
-      throw new HttpException('用户名或密码错误', 201)
-    }
-
-    return user
-  }
 
   // 获取用户列表
   async findAll(query): Promise<UserRo> {

@@ -1,4 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, BeforeInsert, BeforeUpdate } from 'typeorm';
+import * as bcrypt from 'bcrypt';
 
 enum Status {
   ONLINE = 'online',
@@ -14,7 +15,7 @@ export class UserEntity {
   @Column({ unique: true, length: 255, nullable: false })
   username: string;
   /** 用户密码 */
-  @Column({ length: 255, nullable: false })
+  @Column({ length: 255, nullable: false, select: false })
   password: string;
   /** 邮箱 */
   @Column({ unique: true, length: 255, nullable: true })

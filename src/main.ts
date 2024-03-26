@@ -12,18 +12,15 @@ async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
   app.setGlobalPrefix(`api/${VERSION}`)
   app.useGlobalPipes(new ValidationPipe({
-    // whitelist: true,
     transform: true,
-    // transformOptions: {
-    //   enableImplicitConversion: true
-    // }
   }));
+  // 全局守卫
   app.useGlobalGuards(new AuthGuard());
   // 全局注册拦截器
   app.useGlobalInterceptors(new TransformInterceptor())
   // 注册全局错误的过滤器
   app.useGlobalFilters(new HttpExceptionFilter())
-
+  // swagger在线文档
   await swaggerInit(app)
   await app.listen(process.env.NODE_PORT || 3000);
 }
