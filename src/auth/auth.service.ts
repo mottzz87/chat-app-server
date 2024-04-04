@@ -25,7 +25,6 @@ export class AuthService {
     return token
   }
 
-
   async login(data: UserCommonDto): Promise<any> {
     const token = await this.certificate(data)
     return {

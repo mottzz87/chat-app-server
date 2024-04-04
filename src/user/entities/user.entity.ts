@@ -1,7 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, BeforeInsert, BeforeUpdate } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 
-enum Status {
+export enum LoginStatus {
   ONLINE = 'online',
   OFFLINE = 'offline',
   BUSY = 'busy'
@@ -24,8 +24,8 @@ export class UserEntity {
   @Column({ length: 255, nullable: true })
   avatar: string;
   /** 用户登录状态 */
-  @Column({ type: 'enum', enum: Status, default: Status.OFFLINE })
-  status: Status;
+  @Column({ type: 'enum', enum: LoginStatus, default: LoginStatus.OFFLINE })
+  status: LoginStatus;
   /** 用户最后登录时间 */
   @Column({ type: 'timestamp', nullable: true })
   last_login: Date;

@@ -3,12 +3,14 @@ import { AuthService } from './auth.service';
 import { UserCommonDto } from 'src/user/dto/create-user.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
+import { UserService } from '@/user/user.service';
 
 @ApiTags('注册登录')
 @Controller('auth')
 export class AuthController {
   constructor(
-    private readonly authService: AuthService
+    private readonly authService: AuthService,
+    private readonly userService: UserService
   ) { }
 
   /**
@@ -18,11 +20,10 @@ export class AuthController {
   @HttpCode(200)
   @UseGuards(AuthGuard('local'))
   @Post('login')
-  // async login(@Body() data: UserCommonDto) {
-  //   return await this.authService.login(data)
-  // }
-  async login(@Request() req) {
-    return await this.authService.login(req.user)
+  async login(@Body() data: UserCommonDto, @Request() req) {
+    const user = await this.authService.login(req.user)
+    const updatedUser = await this.userService.updateUserLoginStatus(req.user.id)
+    return { ...user, ...updatedUser }
   }
 
   /**

@@ -4,6 +4,11 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
+
+interface PaginationDto {
+  pageNo?: number
+  pageSize?: number
+}
 @ApiTags('用户类接口')
 @ApiBearerAuth()
 @Controller('user')
@@ -13,8 +18,13 @@ export class UserController {
    * 获取用户列表
    */
   @Get('list')
-  async findAll(@Query() query, @Req() req: Request | any): Promise<UserRo> {
-    return await this.userService.findAll(query)
+  async findAll(
+    // @Query() query: PaginationDto,
+    @Req() req: Request | any,
+    @Query('pageNo') pageNo?: number,
+    @Query('pageSize') pageSize?: number
+  ): Promise<UserRo> {
+    return await this.userService.findAll({ pageNo, pageSize })
   }
 
   /**

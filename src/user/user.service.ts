@@ -2,11 +2,15 @@ import { HttpException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateUserDto, UserCommonDto } from './dto/create-user.dto';
-import { UserEntity } from './entities/user.entity';
+import { LoginStatus, UserEntity } from './entities/user.entity';
+import { PaginationService } from '@/utils/pagination';
 
 export interface UserRo {
   list: CreateUserDto[];
-  count: number;
+  pageNo: number;
+  pageSize: number;
+  total: number;
+  totalPages?: number;
 }
 
 @Injectable()
@@ -22,13 +26,13 @@ export class UserService {
     qb.where('1 = 1');
     qb.orderBy('user.created_at', 'DESC');
 
-    const count = await qb.getCount();
-    const { pageNum = 1, pageSize = 10, ...params } = query;
+    const total = await qb.getCount();
+    const { pageNo = 1, pageSize = 10, ...params } = query;
     qb.limit(pageSize);
-    qb.offset(pageSize * (pageNum - 1));
+    qb.offset(pageSize * (pageNo - 1));
 
-    const posts = await qb.getMany();
-    return { list: posts, count: count };
+    const list = await qb.getMany();
+    return { list, total, pageNo, pageSize, };
   }
   // 获取用户信息
   async findById(id): Promise<CreateUserDto> {
@@ -63,5 +67,17 @@ export class UserService {
       throw new HttpException(`id为${id}的用户不存在`, 401);
     }
     return await this.userRepository.remove(exist);
+  }
+
+  async updateUserLoginStatus(id: number): Promise<UserEntity> {
+    const user = await this.userRepository.findOne({ where: { id } });
+    if (!user) {
+      throw new Error('用户名不存在');
+    }
+
+    user.status = LoginStatus.ONLINE;
+    user.last_login = new Date();
+
+    return this.userRepository.save(user);
   }
 }

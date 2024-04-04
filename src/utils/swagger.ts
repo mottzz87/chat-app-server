@@ -13,12 +13,11 @@ export async function swaggerInit(app: NestExpressApplication) {
       type: 'http',
       scheme: 'bearer',
       bearerFormat: 'JWT',
-      description: 'Input your JWT token',
+      description: '输入你的 JWT token',
       name: 'Authorization',
       in: 'header',
-    },
-      'bearer')
-    // .addTag('chat-app')
+    }, 'bearer')
+    // .addTag('v1')
     .build();
 
   // 创建Swagger文档
