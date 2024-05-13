@@ -26,7 +26,9 @@ export async function swaggerInit(app: NestExpressApplication) {
   // 设置`/api`路由为Swagger文档及其UI的主页
   SwaggerModule.setup('api', app, document, {
     swaggerOptions: {
+      filter: true,
       security: [{ 'bearer': [] }],
     },
+
   });
 }

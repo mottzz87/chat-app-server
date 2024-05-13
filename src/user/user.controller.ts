@@ -1,7 +1,6 @@
 import { Body, Controller, Post, Get, Query, Param, Put, Delete, UseGuards, Req } from '@nestjs/common';
 import { UserService, UserRo } from './user.service';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { AuthGuard } from 'src/auth/auth.guard';
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 
@@ -9,6 +8,13 @@ interface PaginationDto {
   pageNo?: number
   pageSize?: number
 }
+
+export interface ComplexObject {
+  id: number;
+  name: string;
+  // other properties...
+}
+
 @ApiTags('用户类接口')
 @ApiBearerAuth()
 @Controller('user')

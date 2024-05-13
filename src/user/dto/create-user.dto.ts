@@ -18,6 +18,10 @@ export class CreateUserDto extends UserCommonDto {
 
   @ApiProperty()
   @IsString()
+  nickname?: string;
+
+  @ApiProperty()
+  @IsString()
   email?: string;
 
   @ApiProperty()

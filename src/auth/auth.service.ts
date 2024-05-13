@@ -9,6 +9,8 @@ import { BcryptService } from '@/utils/bcrypt';
 
 @Injectable()
 export class AuthService {
+  // //token 黑名单（退出登录）
+  // private blackTokenList: string[] = []
   constructor(
     @InjectRepository(UserEntity)
     private readonly userRepository: Repository<UserEntity>,
@@ -25,14 +27,6 @@ export class AuthService {
     return token
   }
 
-  async login(data: UserCommonDto): Promise<any> {
-    const token = await this.certificate(data)
-    return {
-      ...data,
-      token,
-    }
-  }
-
   async register(data: Partial<UserCommonDto>): Promise<UserCommonDto> {
     const { username, password } = data;
     const hasUser = await this.userRepository.findOne({ where: { username } });
@@ -44,4 +38,28 @@ export class AuthService {
       password: await BcryptService.hash(password)
     });
   }
+
+  async login(data: UserCommonDto): Promise<any> {
+    const token = await this.certificate(data)
+    return {
+      ...data,
+      token,
+    }
+  }
+
+  logout(data) {
+    // // 将 Token 添加到黑名单中
+    // this.blackTokenList.push(data.token);
+    return {
+      code: 200,
+      message: '退出登录成功'
+    }
+  }
+
+  // // 验证 Token 是否在黑名单中
+  // isTokenBlacklisted(token: string): boolean {
+  //   console.log(this.blackTokenList)
+  //   return this.blackTokenList.includes(token);
+  // }
+
 }

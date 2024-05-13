@@ -1,4 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column, BaseEntity, CreateDateColumn, UpdateDateColumn, ManyToOne } from 'typeorm';
+import { UserEntity } from 'src/user/entities/user.entity';
 
 export enum MessageType {
   /** 文字消息 */
@@ -21,6 +22,13 @@ export enum MessageType {
   Location = 'location'
 }
 
+export enum ChatScene {
+  /** 单人聊天 */
+  SINGLE = 'single',
+  /** 群组聊天 */
+  GROUP = 'group'
+}
+
 // 定义Message实体类
 @Entity('message')
 export class MessageEntity extends BaseEntity {
@@ -34,7 +42,7 @@ export class MessageEntity extends BaseEntity {
   receiverId: number;
 
   @Column()
-  messageContent: string;
+  content: string;
 
   @Column({ type: 'enum', enum: MessageType, default: MessageType.TEXT })
   messageType: string;
@@ -56,4 +64,13 @@ export class MessageEntity extends BaseEntity {
 
   @UpdateDateColumn()
   updatedAt: Date;
+
+  @ManyToOne(type => UserEntity, user => user.messages)
+  sender: UserEntity;
+
+  @ManyToOne(type => UserEntity, user => user.messages)
+  receiver: UserEntity;
+
+  @Column({ type: 'enum', enum: ChatScene })
+  chatScene: string
 }

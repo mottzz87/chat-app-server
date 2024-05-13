@@ -8,10 +8,13 @@ import { JwtService } from '@nestjs/jwt';
 import { Request } from 'express';
 import { JWT_CONFIG } from 'src/const';
 import { VERSION } from 'src/const/server';
+import { AuthService } from './auth.service';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
-  constructor() { }
+  constructor(
+    private readonly authService: AuthService
+  ) { }
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
@@ -23,6 +26,10 @@ export class AuthGuard implements CanActivate {
     if (!token) {
       throw new UnauthorizedException();
     }
+
+    // if (this.authService.isTokenBlacklisted(token)) {
+    //   throw new UnauthorizedException();
+    // }
     try {
       const payload = await new JwtService().verifyAsync(
         token,
@@ -41,8 +48,8 @@ export class AuthGuard implements CanActivate {
 
   // 白名单权限
   private whiteUrlList: string[] = [
-    `/api/${VERSION}/auth/login`,
-    `/api/${VERSION}/auth/register`
+    `/${VERSION}/auth/login`,
+    `/${VERSION}/auth/register`
   ]
 
   private extractTokenFromHeader(request: Request): string | undefined {

@@ -1,5 +1,6 @@
-import { Entity, PrimaryGeneratedColumn, Column, BeforeInsert, BeforeUpdate } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, BeforeInsert, BeforeUpdate, OneToMany } from 'typeorm';
 import * as bcrypt from 'bcrypt';
+import { MessageEntity } from '@/message/entities/message.entity';
 
 export enum LoginStatus {
   ONLINE = 'online',
@@ -23,16 +24,21 @@ export class UserEntity {
   /** 用户头像 */
   @Column({ length: 255, nullable: true })
   avatar: string;
+  /** 昵称 */
+  @Column({ unique: true, length: 255, nullable: true })
+  nickname: string;
   /** 用户登录状态 */
   @Column({ type: 'enum', enum: LoginStatus, default: LoginStatus.OFFLINE })
-  status: LoginStatus;
+  status?: LoginStatus;
   /** 用户最后登录时间 */
   @Column({ type: 'timestamp', nullable: true })
-  last_login: Date;
+  last_login?: Date;
   /** 用户创建时间 */
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
-  created_at: Date;
+  created_at?: Date;
   /** 用户更新时间 */
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP', onUpdate: 'CURRENT_TIMESTAMP' })
-  updated_at: Date;
+  updated_at?: Date;
+  @OneToMany(type => MessageEntity, message => message.sender)
+  messages?: MessageEntity[];
 }

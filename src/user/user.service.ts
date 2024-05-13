@@ -21,13 +21,13 @@ export class UserService {
   ) { }
 
   // 获取用户列表
-  async findAll(query): Promise<UserRo> {
+  async findAll(query?: any): Promise<UserRo> {
     const qb = await this.userRepository.createQueryBuilder('user');
     qb.where('1 = 1');
     qb.orderBy('user.created_at', 'DESC');
 
     const total = await qb.getCount();
-    const { pageNo = 1, pageSize = 10, ...params } = query;
+    const { pageNo = 1, pageSize = 10000000, ...params } = query || {};
     qb.limit(pageSize);
     qb.offset(pageSize * (pageNo - 1));
 
@@ -69,15 +69,11 @@ export class UserService {
     return await this.userRepository.remove(exist);
   }
 
-  async updateUserLoginStatus(id: number): Promise<UserEntity> {
+  async updateUserLoginStatus(id: number, param): Promise<UserEntity> {
     const user = await this.userRepository.findOne({ where: { id } });
     if (!user) {
       throw new Error('用户名不存在');
     }
-
-    user.status = LoginStatus.ONLINE;
-    user.last_login = new Date();
-
-    return this.userRepository.save(user);
+    return this.userRepository.save({ ...user, ...param });
   }
 }

@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, RequestMethod } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigService, ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
@@ -8,6 +8,9 @@ import envConfig from '../config/env';
 import { MessageModule } from './message/message.module';
 import { UserEntity } from './user/entities/user.entity';
 import { AuthModule } from './auth/auth.module';
+
+import { WebsocketModule } from './websocket/websocket.module';
+import { AuthService } from './auth/auth.service';
 
 @Module({
   imports: [
@@ -38,10 +41,11 @@ import { AuthModule } from './auth/auth.module';
     AuthModule,
     UserModule,
     MessageModule,
+    WebsocketModule,
   ],
   controllers: [AppController],
   providers: [
-    AppService,
+    AppService
   ],
 })
 export class AppModule { }
