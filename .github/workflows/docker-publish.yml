@@ -23,7 +23,7 @@ jobs:
           username: ${{ secrets.USERNAME }}
           password: ${{ secrets.PASSWORD }}
           source: './'
-          target: /pros/
+          target: /root/pros/
 
       - name: SSH to server and restart application
         uses: appleboy/ssh-action@master
