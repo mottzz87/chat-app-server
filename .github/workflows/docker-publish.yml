@@ -33,7 +33,7 @@ jobs:
           username: ${{ secrets.USERNAME }}
           password: ${{ secrets.PASSWORD }}
           script: |
-            cd /pros
+            cd /root/pros
             pnpm install
             pnpm run build
             pm2 restart ./dist/src/main.js --name chat-app
